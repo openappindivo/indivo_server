@@ -37,7 +37,10 @@ urlpatterns = patterns('',
     (r'^apps/$', all_phas),
     (r'^apps/(?P<pha_email>[^/]+)$', MethodDispatcher({'GET' : pha, 'DELETE': pha_delete})),
     (r'^apps/(?P<pha_email>[^/]+)', include('indivo.urls.application')),
-    
+
+    # SMART
+    (r'^smart/', include('indivo.urls.smart')),
+
     # static
     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': 'static'}),
     

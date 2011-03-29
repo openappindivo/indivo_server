@@ -54,6 +54,11 @@ def record_phas(request, record):
     schema = DocumentSchema.objects.get(type=type)
     phas = [pha for pha in phas if pha.schema == schema]
 
+  # add the smart apps
+  phas = [p for p in phas]
+  smart_phas = [installed_app.app for installed_app in SmartRecordInstalledApp.objects.filter(record=record)]
+  phas = phas + smart_phas
+
   # interpolate the the start_url_template into start_url
   for pha in phas:
     pha.start_url = utils.url_interpolate(pha.start_url_template, {'record_id' : record.id})

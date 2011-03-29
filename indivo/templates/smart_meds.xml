@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:med="http://smartplatforms.org/medication#" xmlns:sp="http://smartplatforms.org/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/Person/" xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/" xmlns:ccr="urn:astm-org:CCR">
+{% for med in meds %}
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
+      <med:drug rdf:resource="{{med.medication_brand_name_type}}{{med.medication_brand_name_value}}"/>
+      <dcterms:title>{{med.medication_brand_name}} {{med.medication_strength_value}} {{med.medication_strength_unit_value}}</dcterms:title>
+      <med:dose>{{med.medication_dose_value}}</med:dose>
+      <med:doseUnit>{{med.medication_dose_unit}}</med:doseUnit>
+      <med:strength>{{med.medication_strength_value}}</med:strength>
+      <med:strengthUnits>mg</med:strengthUnits>
+      <med:startDate>{{med.medication_date_started}}</med:startDate>
+      <med:endDate>{{med.medication_date_stopped}}</med:endDate>
+   </rdf:Description>
+{% endfor %}
+</rdf:RDF>

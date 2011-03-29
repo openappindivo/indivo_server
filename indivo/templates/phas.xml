@@ -2,7 +2,7 @@
 {% if phas %}
 <Apps>
 {% for pha in phas %}
-<App id="{{pha.email}}">
+<App id="{{pha.email}}" type="{{pha.app_type}}">
   <startURLTemplate>{{pha.start_url_template}}</startURLTemplate>
   <name>{{pha.name}}</name>
   <description>{{pha.description}}</description>

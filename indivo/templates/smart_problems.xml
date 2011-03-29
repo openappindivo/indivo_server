@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:med="http://smartplatforms.org/medication#" xmlns:sp="http://smartplatforms.org/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/Person/" xmlns:umls="http://www.nlm.nih.gov/research/umls/" xmlns:ccr="urn:astm-org:CCR">
+{% for problem in problems %}
+   <rdf:Description>
+      <rdf:type rdf:resource="http://smartplatforms.org/problem"/>
+      <umls:cui>{{problem.name_value}}</umls:cui>
+      <dcterms:title>{{problem.name}}</dcterms:title>
+      <sp:onset>{{problem.date_onset}}</sp:onset>
+      <sp:resolution>{{problem.date_resolution}}</sp:resolution>
+      <sp:notes>{{problem.comments}}</sp:notes>
+   </rdf:Description>
+{% endfor %}
+</rdf:RDF>

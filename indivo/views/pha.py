@@ -18,7 +18,11 @@ def all_phas(request):
   """A list of the PHAs as JSON"""
 
   phas = PHA.objects.all()
-  return render_template('phas', {'phas': phas}, type="xml")
+  
+  # smart
+  smart_apps = SmartApp.objects.all()
+
+  return render_template('phas', {'phas': [p for p in phas] + [p for p in smart_apps]}, type="xml")
   
 def pha(request, pha):
   return render_template('pha', {'pha' : pha}, type="xml")

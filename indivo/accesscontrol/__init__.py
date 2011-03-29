@@ -331,4 +331,13 @@ def load_access_rules():
            autoshare_revert] # IN OLD SYSTEM, unpermissioned
   AccessRule('Autoshare Permissions', autoshare_permissions, views)
 
+  # SMART related views. For now, all bundled into one.
+  def smart_permissions(principal, record, **unused_args):
+    return full_control(principal, record)
+  smart_views = [smart_app_setup,
+                 smart_app_remove,
+                 smart_meds,
+                 smart_problems]
+  AccessRule('SMART Permissions', smart_permissions, smart_views)
+
 load_access_rules()

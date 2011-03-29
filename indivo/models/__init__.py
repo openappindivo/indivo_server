@@ -34,6 +34,9 @@ from messaging import *
 from notifications import *
 from audit import *
 
+# smart
+from smart import *
+
 # Medical Fact Objects
 from fact_objects.fact                  import Fact # For aggregate fact processing
 from fact_objects.allergy               import Allergy

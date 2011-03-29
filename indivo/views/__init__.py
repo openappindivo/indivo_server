@@ -11,5 +11,7 @@ from record     import *
 from reports    import *
 from shares     import *
 
+from smart import *
+
 from django.http import HttpResponse
 def get_version(request): return HttpResponse(VERSION, mimetype="text/plain")

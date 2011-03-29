@@ -40,6 +40,9 @@ class OAuthApp(Principal):
   secret = models.CharField(max_length=60)
   name = models.CharField(max_length = 200)
 
+  def app_type(self):
+    return ""
+
 ## HACK because of problem
 #OAuthApp = Principal
 
