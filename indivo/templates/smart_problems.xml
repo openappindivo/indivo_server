@@ -1,13 +1,22 @@
+{% load template_utils %}
 <?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:med="http://smartplatforms.org/medication#" xmlns:sp="http://smartplatforms.org/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/Person/" xmlns:umls="http://www.nlm.nih.gov/research/umls/" xmlns:ccr="urn:astm-org:CCR">
-{% for problem in problems %}
-   <rdf:Description>
-      <rdf:type rdf:resource="http://smartplatforms.org/problem"/>
-      <umls:cui>{{problem.name_value}}</umls:cui>
-      <dcterms:title>{{problem.name}}</dcterms:title>
-      <sp:onset>{{problem.date_onset}}</sp:onset>
-      <sp:resolution>{{problem.date_resolution}}</sp:resolution>
-      <sp:notes>{{problem.comments}}</sp:notes>
-   </rdf:Description>
-{% endfor %}
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/terms#" xmlns:dcterms="http://purl.org/dc/terms/">
+  {% for problem in problems %}
+  <sp:Problem>
+    <sp:problemName>
+      <sp:CodedValue>
+        <sp:code>
+	  <sp:Code rdf:about="{{problem.name_type}}{{problem.name_value}}">
+	    <sp:system rdf:resource="{{problem.name_type}}" />
+	    <dcterms:identifier>{{problem.name_value}}</dcterms:identifier>
+	  </sp:Code>
+	</sp:code>
+        <dcterms:title>{{problem.name}}</dcterms:title>      
+      </sp:CodedValue>
+    </sp:problemName>
+    <sp:onset>{{problem.date_onset}}</sp:onset>
+    <sp:resolution>{{problem.date_resolution}}</sp:resolution>
+    <sp:notes>{{problem.comments|check_empty}}</sp:notes>
+  </sp:Problem>
+  {% endfor %}
 </rdf:RDF>

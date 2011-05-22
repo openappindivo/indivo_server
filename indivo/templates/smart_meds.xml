@@ -1,16 +1,35 @@
+{% load template_utils %}
 <?xml version="1.0" encoding="utf-8"?>
-<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:med="http://smartplatforms.org/medication#" xmlns:sp="http://smartplatforms.org/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/Person/" xmlns:rxcui="http://link.informatics.stonybrook.edu/rxnorm/RXCUI/" xmlns:ccr="urn:astm-org:CCR">
-{% for med in meds %}
-   <rdf:Description>
-      <rdf:type rdf:resource="http://smartplatforms.org/medication"/>
-      <med:drug rdf:resource="{{med.medication_brand_name_type}}{{med.medication_brand_name_value}}"/>
-      <dcterms:title>{{med.medication_brand_name}} {{med.medication_strength_value}} {{med.medication_strength_unit_value}}</dcterms:title>
-      <med:dose>{{med.medication_dose_value}}</med:dose>
-      <med:doseUnit>{{med.medication_dose_unit}}</med:doseUnit>
-      <med:strength>{{med.medication_strength_value}}</med:strength>
-      <med:strengthUnits>mg</med:strengthUnits>
-      <med:startDate>{{med.medication_date_started}}</med:startDate>
-      <med:endDate>{{med.medication_date_stopped}}</med:endDate>
-   </rdf:Description>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/terms#" xmlns:dcterms="http://purl.org/dc/terms/">
+  {% for med in meds %}
+  <sp:Medication>
+    <sp:drugName>
+      <sp:CodedValue>
+        <sp:code>
+	  <sp:Code rdf:about="{{med.name_type}}{{med.name_value}}">
+	    <sp:system rdf:resource="{{med.name_type}}" />
+	    <dcterms:identifier>{{med.name_value}}</dcterms:identifier>
+	  </sp:Code>
+	</sp:code>
+        <dcterms:title>{{med.name}}</dcterms:title>
+      </sp:CodedValue>
+    </sp:drugName>
+    <sp:startDate>{{med.date_started}}</sp:startDate>
+    <sp:endDate>{{med.date_stopped}}</sp:endDate>
+    <sp:instructions>{{med.prescription_instructions|check_empty}}</sp:instructions>
+    <sp:quantity>
+      <sp:ValueAndUnit>
+        <sp:value>{{med.dose_value}}</sp:value>
+        <sp:unit>{{med.does_unit}}</sp:unit>
+      </sp:ValueAndUnit>
+    </sp:quantity>
+    <!-- can't do frequency yet -->
+    <sp:frequency>
+      <sp:ValueAndUnit>
+        <sp:value></sp:value>
+        <sp:unit></sp:unit>
+      </sp:ValueAndUnit>
+    </sp:frequency>
+  </sp:Medication>
 {% endfor %}
 </rdf:RDF>
