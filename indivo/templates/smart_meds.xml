@@ -20,7 +20,7 @@
     <sp:quantity>
       <sp:ValueAndUnit>
         <sp:value>{{med.dose_value}}</sp:value>
-        <sp:unit>{{med.does_unit}}</sp:unit>
+        <sp:unit>{{med.dose_unit}}</sp:unit>
       </sp:ValueAndUnit>
     </sp:quantity>
     <!-- can't do frequency yet -->
