@@ -1,0 +1,75 @@
+{% load template_utils %}
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/terms#" xmlns:dcterms="http://purl.org/dc/terms/">
+  {% for lab in lab_results %}
+  <sp:LabResult>
+    <sp:labName>
+      <sp:CodedValue>
+	<sp:code rdf:resource="{{}}{{}}"/>
+	<dcterms:title>{{}}</dcterms:title>
+      </sp:CodedValue>
+    </sp:labName>
+
+    <sp:quantitativeResult>
+      <sp:QuantitativeResult>
+        <sp:valueAndUnit>
+          <sp:ValueAndUnit>
+            <sp:value>140</sp:value>
+            <sp:unit>mEq/L</sp:unit>
+          </sp:ValueAndUnit>
+        </sp:valueAndUnit>
+        <sp:normalRange>
+          <sp:ResultRange>
+            <sp:minimum>
+              <sp:ValueAndUnit>
+                <sp:value>135</sp:value>
+                <sp:unit>mEq/L</sp:unit>
+              </sp:ValueAndUnit>
+            </sp:minimum>
+            <sp:maximum>
+              <sp:ValueAndUnit>
+                <sp:value>145</sp:value>
+                <sp:unit>mEq/L</sp:unit>
+              </sp:ValueAndUnit>
+            </sp:maximum>
+          </sp:ResultRange>
+        </sp:normalRange>
+        <sp:nonCriticalRange>
+          <sp:ResultRange>
+            <sp:minimum>
+              <sp:ValueAndUnit>
+                <sp:value>120</sp:value>
+                <sp:unit>mEq/L</sp:unit>
+              </sp:ValueAndUnit>
+            </sp:minimum>
+            <sp:maximum>
+              <sp:ValueAndUnit>
+                <sp:value>155</sp:value>
+                <sp:unit>mEq/L</sp:unit>
+              </sp:ValueAndUnit>
+            </sp:maximum>
+          </sp:ResultRange>
+        </sp:nonCriticalRange>
+      </sp:QuantitativeResult>
+    </sp:quantitativeResult>
+    
+    <sp:externalID></sp:externalID>
+    
+    <sp:status>
+      <sp:CodedValue>
+	<sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#final"/>
+	<dcterms:title>Final results: complete and verified</dcterms:title>      
+      </sp:CodedValue>
+    </sp:status>
+
+    <sp:abnormalInterpretation>
+      <sp:CodedValue>
+	<sp:code rdf:resource="http://smartplatforms.org/terms/code/labInterpretation#normal"/>
+	<dcterms:title>Normal</dcterms:title>      
+      </sp:CodedValue>
+    </sp:abnormalInterpretation>
+
+    <sp:comments></sp:comments>
+  </sp:LabResult>
+  {% endfor %}
+</rdf:RDF>
