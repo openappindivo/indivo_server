@@ -15,6 +15,89 @@ medication_1 = """<Medication xmlns="http://indivo.org/vocab/xml/documents#"> <d
 # problems
 problem_1 = """<Problem xmlns='http://indivo.org/vocab/xml/documents#'> <dateOnset>2009-05-16T12:00:00Z</dateOnset> <dateResolution>2009-05-16T16:00:00Z</dateResolution> <name type='http://www.ihtsdo.org/snomed-ct/concepts/' value='161891005'>Backache (finding)</name> <comments></comments> <diagnosedBy>Dr. Mandl</diagnosedBy> </Problem>"""
 
+# labs
+labs_1 = """
+<Lab xmlns="http://indivo.org/vocab/xml/documents#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dateMeasured>2009-07-16T12:00:00Z</dateMeasured>
+  <labType>hematology</labType>
+  <laboratory>
+    <name>Quest</name>
+    <address>300 Longwood Ave, Boston MA 02215</address>
+  </laboratory>
+
+  <labPanel>
+    <name type="http://codes.indivo.org/labs/panels#" abbrev="cbc" value="CBC">CBC</name>
+    
+  <labTest xsi:type="SingleResultLabTest">
+    <dateMeasured>2009-07-16T12:23:00Z</dateMeasured>
+    <name type="http://codes.indivo.org/labs/tests#" abbrev="Hct" value="evf">evf</name>
+    <final>true</final>
+    <result xsi:type="ResultInRange">
+      <flag type="http://codes.indivo.org/hl7/abnormal-flags#" abbrev="A" value="abnormal" />
+      <valueAndUnit>
+	<value>49</value>
+	<unit type="http://codes.indivo.org/units#" abbrev="%" value="percentage">%</unit>
+      </valueAndUnit>
+      <normalRange>
+	<minimum>44</minimum>
+	<maximum>48</maximum>
+	<unit type="http://codes.indivo.org/units#" abbrev="%" value="percentage" />
+      </normalRange>
+      <nonCriticalRange>
+	<minimum>42</minimum>
+	<maximum>50</maximum>
+	<unit type="http://codes.indivo.org/units#" abbrev="%" value="percentage" />
+      </nonCriticalRange>
+    </result>
+    
+  </labTest>
+
+    <labTest xsi:type="SingleResultLabTest">
+      <dateMeasured>2009-07-16T12:23:00Z</dateMeasured>
+      <name type="http://codes.indivo.org/labs/tests#" abbrev="Hct" value="evf" />
+      <final>true</final>
+      <result xsi:type="ResultInRange">
+	<flag type="http://codes.indivo.org/hl7/abnormal-flags#" abbrev="A" value="abnormal" />
+	<valueAndUnit>
+	  <value>49</value>
+	  <unit type="http://codes.indivo.org/units#" abbrev="%" value="percentage" />
+	</valueAndUnit>
+	<normalRange>
+	  <minimum>44</minimum>
+	  <maximum>48</maximum>
+	  <unit type="http://codes.indivo.org/units#" abbrev="%" value="percentage" />
+	</normalRange>
+	<nonCriticalRange>
+	  <minimum>42</minimum>
+	  <maximum>50</maximum>
+	  <unit type="http://codes.indivo.org/units#" abbrev="%" value="percentage" />
+	</nonCriticalRange>
+      </result>
+
+    </labTest>
+
+    <labTest xsi:type="SingleResultLabTest">
+      <dateMeasured>2009-07-16T12:23:00Z</dateMeasured>
+      <name type="http://codes.indivo.org/labs/tests#" abbrev="hiv" value="HIV" />
+      <final>true</final>
+      <result xsi:type="ResultInSet">
+	<!-- there could be a flag here -->
+	<!-- <flag type="http://codes.indivo.org/hl7/abnormal-flags#" abbrev="A" value="abnormal" /> -->
+	<value>negative</value>
+
+	<!-- these options may not be listed, given that flag may be raised -->
+	<option normal="false">positive</option>
+	<option normal="true">negative</option>
+	<option normal="true" description="insufficient sample">inconclusive</option>
+      </result>
+    </labTest>
+  </labPanel>
+
+  <comments>was looking pretty sick</comments>
+
+</Lab>
+"""
+
 # demographics
 demographics_xml = """
 <Demographics xmlns="http://indivo.org/vocab/xml/documents#">
@@ -42,6 +125,6 @@ if not record.demographics:
     from indivo.views.documents.special_documents import set_special_doc
     set_special_doc(record, 'demographics', demographics_doc)
 
-for doc in [problem_1, medication_1]:
+for doc in [problem_1, medication_1, labs_1]:
     _document_create(record.owner, doc, None, record)
 

@@ -179,6 +179,7 @@ class DocumentProcessing:
       # Return result
       return result_str
     except:
+      import pdb; pdb.set_trace()
       return False
 
   def _process(self):
@@ -211,6 +212,8 @@ class DocumentProcessing:
       if stylesheet:
         self.set_doc(self.apply_stylesheet(self.doc[OCON], stylesheet))
 
+      print "DOC:\n%s\n\n" % self.doc
+
       # Test for a process method
       # If dp_data_obj has a process method then use it
       # else use document_processing standard
@@ -219,13 +222,26 @@ class DocumentProcessing:
       else:
         doc_data = self.parse_standard_facts_doc(self.doc)
 
+      print "DATA:\n%s\n\n" % doc_data
+
       # If dp_data_obj has the post_data method
       # then post it and set and return the fact obj
       if hasattr(dp_data_obj, DP_DOBJ_POST_DATA) and doc_data:
         try:
           f_objs = []
+
           for data in doc_data:
-            f_objs.append(dp_data_obj.post_data(**data))
+            # if the data declares a type and the processing class has the right method
+            # use the new approach instead (suggested by Ben 2011-05-30)
+            print "one obj: %s\n" % data.keys()
+            if data.has_key('type') and hasattr(dp_data_obj, 'post_data_by_dict'):
+              processed_result = dp_data_obj.post_data_by_dict(data)
+            else:
+              processed_result = dp_data_obj.post_data(**data)
+
+            # append only actual facts, not null objects
+            if processed_result:
+              f_objs.append(processed_result)
           if f_objs:
             return {self.f_objs_str : f_objs}
         except ValueError, e:

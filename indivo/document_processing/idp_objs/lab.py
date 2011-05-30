@@ -1,10 +1,32 @@
 from indivo.lib import iso8601
-from indivo.models import Lab
+from indivo.models import LabResult, Lab
 
 XML = 'xml'
 DOM = 'dom'
 
 class IDP_Lab:
+
+  def post_data_by_dict(self, data):
+    """
+    a more sane approach to processing the data for fact objects
+    this method is only invoked when data has a 'type' associated with it.
+    For now, that only happens when we're processing an individual lab result
+    """
+    if data['type'] != 'labresult':
+      return None
+
+    # remove this from the dict because we don't need it
+    # FIXME: this should probably not have a side-effect
+    del data['type']
+
+    if data['date_measured']:
+      data['date_measured'] = iso8601.parse_utc_date(data['date_measured'])
+
+    try:
+      return LabResult.objects.create(**data)
+    except Exception, e:
+      raise ValueError("problem processing single lab result " + str(e))
+    
 
   def post_data(self,  date_measured,
                 lab_type=None, 

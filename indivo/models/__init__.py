@@ -45,6 +45,7 @@ from fact_objects.equipment             import Equipment
 from fact_objects.measurement           import Measurement
 from fact_objects.immunization          import Immunization
 from fact_objects.lab                   import Lab
+from fact_objects.labresult             import LabResult
 from fact_objects.medication            import Medication
 from fact_objects.problem               import Problem
 from fact_objects.procedure             import Procedure

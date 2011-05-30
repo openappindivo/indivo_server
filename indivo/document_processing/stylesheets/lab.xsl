@@ -28,7 +28,45 @@
 	  </xsl:otherwise>
 	</xsl:choose>
       </fact>
+
+      <xsl:apply-templates select='indivodoc:labTest' />
+
+      <xsl:apply-templates select='indivodoc:labPanel/indivodoc:labTest' />
+
     </facts>
+  </xsl:template>
+
+  <xsl:template match="indivodoc:labTest">
+    <fact>
+      <type>labresult</type>
+      <date_measured><xsl:value-of select='indivodoc:dateMeasured/text()' /></date_measured>
+      <name><xsl:value-of select='indivodoc:name/text()' /></name>
+      <name_type><xsl:value-of select='indivodoc:name/@type' /></name_type>
+      <name_value><xsl:value-of select='indivodoc:name/@value' /></name_value>
+      <is_final><xsl:value-of select='indivodoc:final/text()' /></is_final>
+      <xsl:if test="indivodoc:result/indivodoc:valueAndUnit">
+	<result_value>
+	  <xsl:choose>
+	    <xsl:when test="indivodoc:result/indivodoc:valueAndUnit/indivodoc:value">
+	      <xsl:value-of select="indivodoc:result/indivodoc:valueAndUnit/indivodoc:value/text()" />
+	    </xsl:when>
+	    <xsl:otherwise>
+	      <xsl:value-of select="indivodoc:result/indivodoc:valueAndUnit/indivodoc:textValue/text()" />
+	    </xsl:otherwise>
+	  </xsl:choose>
+	</result_value>
+	<result_unit><xsl:value-of select='indivodoc:result/indivodoc:unit/text()' /></result_unit>
+	<result_unit_type><xsl:value-of select='indivodoc:result/indivodoc:unit/@type' /></result_unit_type>
+	<result_unit_value><xsl:value-of select='indivodoc:result/indivodoc:unit/@value' /></result_unit_value>
+	<xsl:if test="indivodoc:result/indivodoc:flag">
+	  <flag_type><xsl:value-of select='indivodoc:result/indivodoc:flag/@type' /></flag_type>
+	  <flag_value><xsl:value-of select='indivodoc:result/indivodoc:flag/@value' /></flag_value>
+	</xsl:if>
+      </xsl:if>
+      <xsl:call-template name="ranges">
+	<xsl:with-param name="result" select="indivodoc:result" />
+      </xsl:call-template>
+    </fact>
   </xsl:template>
 
   <xsl:template match="indivodoc:result">
@@ -49,38 +87,45 @@
     </first_lab_test_value>
     
     <xsl:if test="indivodoc:valueAndUnit or indivodoc:value">
-      <xsl:if test="indivodoc:normalRange/indivodoc:minimum">
-	<normal_range_minimum><xsl:value-of select="indivodoc:normalRange/indivodoc:minimum/text()"/>
-	  <xsl:if test="indivodoc:normalRange/indivodoc:unit">
-	    <xsl:value-of select="indivodoc:normalRange/indivodoc:unit/@indivodoc:abbrev"/>
-	  </xsl:if>
-	</normal_range_minimum>
-      </xsl:if>
-      
-      <xsl:if test="indivodoc:normalRange/indivodoc:maximum">
-	<normal_range_maximum><xsl:value-of select="indivodoc:normalRange/indivodoc:maximum/text()"/>
-	  <xsl:if test="indivodoc:normalRange/indivodoc:unit">
-	    <xsl:value-of select="indivodoc:normalRange/indivodoc:unit/@indivodoc:abbrev"/>
-	  </xsl:if>
-	</normal_range_maximum>
-      </xsl:if>
-      
-      <xsl:if test="indivodoc:nonCriticalRange/indivodoc:minimum">
-	<non_critical_range_minimum><xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:minimum/text()"/>
-	  <xsl:if test="indivodoc:nonCriticalRange/indivodoc:unit">
-	    <xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:unit/@indivodoc:abbrev"/>
-	  </xsl:if>
-	</non_critical_range_minimum>
-      </xsl:if>
-      
-      <xsl:if test="indivodoc:nonCriticalRange/indivodoc:maximum">
-	<non_critical_range_maximum><xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:maximum/text()"/>
-	  <xsl:if test="indivodoc:nonCriticalRange/indivodoc:unit">
-	    <xsl:value-of select="indivodoc:nonCriticalRange/indivodoc:unit/@indivodoc:abbrev"/>
-	  </xsl:if>
-	</non_critical_range_maximum>
-      </xsl:if>
-      
+      <xsl:call-template name="ranges">
+	<xsl:with-param name="result" select="." />
+      </xsl:call-template>
     </xsl:if>
   </xsl:template>
+
+  <xsl:template name="ranges">
+    <xsl:param name="result" />
+    <xsl:if test="$result/indivodoc:normalRange/indivodoc:minimum">
+      <normal_range_minimum><xsl:value-of select="$result/indivodoc:normalRange/indivodoc:minimum/text()"/>
+	<xsl:if test="$result/indivodoc:normalRange/indivodoc:unit">
+	  <xsl:value-of select="$result/indivodoc:normalRange/indivodoc:unit/@indivodoc:abbrev"/>
+	</xsl:if>
+      </normal_range_minimum>
+    </xsl:if>
+    
+    <xsl:if test="$result/indivodoc:normalRange/indivodoc:maximum">
+      <normal_range_maximum><xsl:value-of select="$result/indivodoc:normalRange/indivodoc:maximum/text()"/>
+	<xsl:if test="$result/indivodoc:normalRange/indivodoc:unit">
+	  <xsl:value-of select="$result/indivodoc:normalRange/indivodoc:unit/@indivodoc:abbrev"/>
+	</xsl:if>
+      </normal_range_maximum>
+    </xsl:if>
+    
+    <xsl:if test="$result/indivodoc:nonCriticalRange/indivodoc:minimum">
+      <non_critical_range_minimum><xsl:value-of select="$result/indivodoc:nonCriticalRange/indivodoc:minimum/text()"/>
+	<xsl:if test="$result/indivodoc:nonCriticalRange/indivodoc:unit">
+	  <xsl:value-of select="$result/indivodoc:nonCriticalRange/indivodoc:unit/@indivodoc:abbrev"/>
+	</xsl:if>
+      </non_critical_range_minimum>
+    </xsl:if>
+    
+    <xsl:if test="$result/indivodoc:nonCriticalRange/indivodoc:maximum">
+      <non_critical_range_maximum><xsl:value-of select="$result/indivodoc:nonCriticalRange/indivodoc:maximum/text()"/>
+	<xsl:if test="$result/indivodoc:nonCriticalRange/indivodoc:unit">
+	  <xsl:value-of select="$result/indivodoc:nonCriticalRange/indivodoc:unit/@indivodoc:abbrev"/>
+	</xsl:if>
+      </non_critical_range_maximum>
+    </xsl:if>
+  </xsl:template>
+
 </xsl:stylesheet>

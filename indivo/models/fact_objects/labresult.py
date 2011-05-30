@@ -19,7 +19,7 @@ class LabResult(Fact):
   name                  = models.CharField(max_length=300, null=True)
   name_type             = models.CharField(max_length=250, null=True)
   name_value            = models.CharField(max_length=250, null=True)
-  is_final              = models.BooleanField(null=True)
+  is_final              = models.NullBooleanField(null=True)
 
   # result
   result_value          = models.CharField(max_length=100, null=True)
