@@ -337,7 +337,9 @@ def load_access_rules():
   smart_views = [smart_app_setup,
                  smart_app_remove,
                  smart_meds,
-                 smart_problems]
+                 smart_problems,
+                 smart_demographics,
+                 smart_lab_results]
   AccessRule('SMART Permissions', smart_permissions, smart_views)
 
 load_access_rules()

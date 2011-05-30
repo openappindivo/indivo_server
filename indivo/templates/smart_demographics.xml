@@ -1,0 +1,11 @@
+{% load template_utils %}
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:sp="http://smartplatforms.org/terms#" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:foaf="http://xmlns.com/foaf/0.1/">
+  <foaf:Person>
+    <foaf:familyName>{{demographics.name}}</foaf:familyName>
+    <foaf:gender>{{demographics.gender}}</foaf:gender>
+    <foaf:zipcode></foaf:zipcode>
+    <sp:birthday>{{demographics.dateOfBirth}}</sp:birthday>
+    <foaf:givenName></foaf:givenName>
+  </foaf:Person>
+</rdf:RDF>

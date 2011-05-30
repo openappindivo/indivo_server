@@ -9,6 +9,9 @@ urlpatterns = patterns(
     # app setup
     (r'^records/(?P<record_id>[^/]+)/apps/(?P<smart_app_email>[^/]+)/setup', smart_app_setup),
     (r'^records/(?P<record_id>[^/]+)/apps/(?P<smart_app_email>[^/]+)/remove', smart_app_remove),
+
+    # smart demographics
+    (r'^records/(?P<record_id>[^/]+)/demographics$', smart_demographics),
     
     # smart meds call
     (r'^records/(?P<record_id>[^/]+)/medications/$', smart_meds),

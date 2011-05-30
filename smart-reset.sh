@@ -1,3 +1,3 @@
 #!/bin/bash
-utils/reset.sh -bcs
-python manage.py shell < load_meds.py
+utils/reset.sh -bs
+python manage.py shell < load_smart_data.py

@@ -26,4 +26,11 @@ SmartApp.objects.create(
     start_url_template = 'http://sample-apps.smartplatforms.org/framework/got_statins/bootstrap.html',
     has_ui = True)
 
+SmartApp.objects.create(
+    email = 'cardio_risk_viz@apps.smartplatforms.org',
+    consumer_key = 'cardio_risk_viz@apps.smartplatforms.org',
+    name = 'Cardiac Risk',
+    start_url_template = 'http://sample-apps.smartplatforms.org/framework/cardio_risk_viz/bootstrap.html',
+    has_ui = True)
+
 
