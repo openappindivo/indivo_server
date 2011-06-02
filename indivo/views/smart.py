@@ -46,6 +46,5 @@ def smart_demographics(request, record):
     return render_template('smart_demographics', {'demographics': demographics})
 
 def smart_lab_results(request, record):
-    # FIXME: do lab results here
-    lab_results = []
+    lab_results = LabResult.objects.filter(record=record)
     return render_template('smart_lab_results', {'lab_results' : lab_results})

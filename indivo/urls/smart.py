@@ -18,4 +18,7 @@ urlpatterns = patterns(
 
     # smart problems call
     (r'^records/(?P<record_id>[^/]+)/problems/$', smart_problems),
+
+    # smart lab_results call
+    (r'^records/(?P<record_id>[^/]+)/lab_results/$', smart_lab_results),
 )

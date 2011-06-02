@@ -5,8 +5,8 @@
   <sp:LabResult>
     <sp:labName>
       <sp:CodedValue>
-	<sp:code rdf:resource="{{}}{{}}"/>
-	<dcterms:title>{{}}</dcterms:title>
+	<sp:code rdf:resource="{{lab.name_type}}{{lab.name_value}}"/>
+	<dcterms:title>{{lab.name}}</dcterms:title>
       </sp:CodedValue>
     </sp:labName>
 
