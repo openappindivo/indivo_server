@@ -6,70 +6,83 @@
     <sp:labName>
       <sp:CodedValue>
 	<sp:code rdf:resource="{{lab.name_type}}{{lab.name_value}}"/>
-	<dcterms:title>{{lab.name}}</dcterms:title>
+	<dcterms:title>{{lab.name|check_empty}}</dcterms:title>
       </sp:CodedValue>
     </sp:labName>
 
+    {% if lab.result_value %}
     <sp:quantitativeResult>
       <sp:QuantitativeResult>
         <sp:valueAndUnit>
           <sp:ValueAndUnit>
-            <sp:value>140</sp:value>
-            <sp:unit>mEq/L</sp:unit>
+            <sp:value>{{lab.result_value}}</sp:value>
+            <sp:unit>{{lab.result_unit|check_empty}}</sp:unit>
           </sp:ValueAndUnit>
         </sp:valueAndUnit>
+	{% if lab.normal_range_minimum %}
         <sp:normalRange>
           <sp:ResultRange>
             <sp:minimum>
               <sp:ValueAndUnit>
-                <sp:value>135</sp:value>
-                <sp:unit>mEq/L</sp:unit>
+                <sp:value>{{lab.normal_range_minimum}}</sp:value>
+                <sp:unit>{{lab.result_unit|check_empty}}</sp:unit>
               </sp:ValueAndUnit>
             </sp:minimum>
             <sp:maximum>
               <sp:ValueAndUnit>
-                <sp:value>145</sp:value>
-                <sp:unit>mEq/L</sp:unit>
+                <sp:value>{{lab.normal_range_maximum}}</sp:value>
+                <sp:unit>{{lab.result_unit|check_empty}}</sp:unit>
               </sp:ValueAndUnit>
             </sp:maximum>
           </sp:ResultRange>
         </sp:normalRange>
+	{% endif %}
+	{% if lab.non_critical_range_minimum %}
         <sp:nonCriticalRange>
           <sp:ResultRange>
             <sp:minimum>
               <sp:ValueAndUnit>
-                <sp:value>120</sp:value>
-                <sp:unit>mEq/L</sp:unit>
+                <sp:value>{{lab.non_critical_range_minimum}}</sp:value>
+                <sp:unit>{{lab.result_unit|check_empty}}</sp:unit>
               </sp:ValueAndUnit>
             </sp:minimum>
             <sp:maximum>
               <sp:ValueAndUnit>
-                <sp:value>155</sp:value>
-                <sp:unit>mEq/L</sp:unit>
+                <sp:value>{{lab.non_critical_range_maximum}}</sp:value>
+                <sp:unit>{{lab.result_unit|check_empty}}</sp:unit>
               </sp:ValueAndUnit>
             </sp:maximum>
           </sp:ResultRange>
         </sp:nonCriticalRange>
+	{% endif %}
       </sp:QuantitativeResult>
     </sp:quantitativeResult>
+    {% endif %}
     
     <sp:externalID></sp:externalID>
     
     <sp:status>
       <sp:CodedValue>
+	{% if lab.is_final %}
 	<sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#final"/>
 	<dcterms:title>Final results: complete and verified</dcterms:title>      
+	{% else %}
+	<sp:code rdf:resource="http://smartplatforms.org/terms/code/labStatus#incomplete"/>
+	<dcterms:title>Incomplete results: still waiting for final confirmation</dcterms:title>      
+	{% endif %}
       </sp:CodedValue>
     </sp:status>
 
+    {% if lab.flag_type %}
     <sp:abnormalInterpretation>
       <sp:CodedValue>
-	<sp:code rdf:resource="http://smartplatforms.org/terms/code/labInterpretation#normal"/>
-	<dcterms:title>Normal</dcterms:title>      
+	<sp:code rdf:resource="{{lab.flag_type}}{{lab.flag_value}}"/>
+	<dcterms:title></dcterms:title>      
       </sp:CodedValue>
     </sp:abnormalInterpretation>
+    {% endif %}
 
-    <sp:comments></sp:comments>
+    <sp:comments>{{lab.lab_comments|check_empty}}</sp:comments>
   </sp:LabResult>
   {% endfor %}
 </rdf:RDF>

@@ -98,11 +98,63 @@ labs_1 = """
 </Lab>
 """
 
+labs_2 = """
+<Lab xmlns="http://indivo.org/vocab/xml/documents#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <dateMeasured>2011-03-12T12:00:00Z</dateMeasured>
+  <labType>cardiology</labType>
+  <laboratory>
+    <name>Quest</name>
+    <address>300 Longwood Ave, Boston MA 02215</address>
+  </laboratory>
+
+  <labPanel>
+    <name type="http://codes.indivo.org/labs/panels#" abbrev="chol" value="cholesterol">Cholesterol</name>
+    
+  <labTest xsi:type="SingleResultLabTest">
+    <dateMeasured>2011-03-12T12:23:00Z</dateMeasured>
+    <name type="http://loinc.org/codes/" abbrev="hsCRP" value="30522-7">hsCRP</name>
+    <final>true</final>
+    <result xsi:type="ResultInRange">
+      <valueAndUnit>
+	<value>3.4</value>
+	<unit type="http://codes.indivo.org/units#" abbrev="mg/L" value="mg/L">mg/L</unit>
+      </valueAndUnit>
+    </result>    
+  </labTest>
+
+  <labTest xsi:type="SingleResultLabTest">
+    <dateMeasured>2011-03-12T12:23:00Z</dateMeasured>
+    <name type="http://loinc.org/codes/" abbrev="chol" value="2093-3">cholesterol</name>
+    <final>true</final>
+    <result xsi:type="ResultInRange">
+      <valueAndUnit>
+	<value>167</value>
+	<unit type="http://codes.indivo.org/units#" abbrev="mg/dL" value="mg/dL">mg/dL</unit>
+      </valueAndUnit>
+    </result>    
+  </labTest>
+
+  <labTest xsi:type="SingleResultLabTest">
+    <dateMeasured>2011-03-12T12:23:00Z</dateMeasured>
+    <name type="http://loinc.org/codes/" abbrev="HDL" value="2085-9">HDL</name>
+    <final>true</final>
+    <result xsi:type="ResultInRange">
+      <valueAndUnit>
+	<value>31</value>
+	<unit type="http://codes.indivo.org/units#" abbrev="mg/dL" value="mg/dL">mg/dL</unit>
+      </valueAndUnit>
+    </result>    
+  </labTest>
+
+  </labPanel>
+</Lab>
+"""
+
 # demographics
 demographics_xml = """
 <Demographics xmlns="http://indivo.org/vocab/xml/documents#">
-    <dateOfBirth>1960-05-15</dateOfBirth>
-    <gender>Female</gender>
+    <dateOfBirth>1960-04-12</dateOfBirth>
+    <gender>Male</gender>
     <ethnicity>Basque</ethnicity>
     <language>EN</language>
     <maritalStatus>Married</maritalStatus>
@@ -125,6 +177,6 @@ if not record.demographics:
     from indivo.views.documents.special_documents import set_special_doc
     set_special_doc(record, 'demographics', demographics_doc)
 
-for doc in [problem_1, medication_1, labs_1]:
+for doc in [problem_1, medication_1, labs_1, labs_2]:
     _document_create(record.owner, doc, None, record)
 

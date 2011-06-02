@@ -41,7 +41,10 @@ def smart_demographics(request, record):
     demographics = dict([(c.tag.replace('{http://indivo.org/vocab/xml/documents#}',''),c.text) for c in demographics_doc.getchildren()])
     
     # add name info
-    demographics['name'] = record.label
+    # we have to split things up
+    name_parts = record.label.split(' ')
+    demographics['first_name'] = ' '.join(name_parts[:len(name_parts)-1])
+    demographics['last_name'] = name_parts[len(name_parts)-1]
 
     return render_template('smart_demographics', {'demographics': demographics})
 

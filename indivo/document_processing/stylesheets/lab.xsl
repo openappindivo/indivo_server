@@ -55,9 +55,9 @@
 	    </xsl:otherwise>
 	  </xsl:choose>
 	</result_value>
-	<result_unit><xsl:value-of select='indivodoc:result/indivodoc:unit/text()' /></result_unit>
-	<result_unit_type><xsl:value-of select='indivodoc:result/indivodoc:unit/@type' /></result_unit_type>
-	<result_unit_value><xsl:value-of select='indivodoc:result/indivodoc:unit/@value' /></result_unit_value>
+	<result_unit><xsl:choose><xsl:when test='indivodoc:result/indivodoc:valueAndUnit/indivodoc:unit/text()'><xsl:value-of select='indivodoc:result/indivodoc:valueAndUnit/indivodoc:unit/text()' /></xsl:when><xsl:otherwise><xsl:value-of select='indivodoc:result/indivodoc:valueAndUnit/indivodoc:unit/@value' /></xsl:otherwise></xsl:choose></result_unit>
+	<result_unit_type><xsl:value-of select='indivodoc:result/indivodoc:valueAndUnit/indivodoc:unit/@type' /></result_unit_type>
+	<result_unit_value><xsl:value-of select='indivodoc:result/indivodoc:valueAndUnit/indivodoc:unit/@value' /></result_unit_value>
 	<xsl:if test="indivodoc:result/indivodoc:flag">
 	  <flag_type><xsl:value-of select='indivodoc:result/indivodoc:flag/@type' /></flag_type>
 	  <flag_value><xsl:value-of select='indivodoc:result/indivodoc:flag/@value' /></flag_value>
