@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.http import urlencode
 
 from indivo.models import *
+from indivo.tests.data.reports import TEST_REPORTS
 import urls
 import re
 from xml.dom import minidom
@@ -119,6 +120,16 @@ class InternalTests(django.test.TestCase):
     def createMessage(self, **kwargs):
         message = Message.objects.create(**kwargs)
         return message
+
+    def loadTestReports(self, record, creator):
+        for report in TEST_REPORTS:
+            report_args = {'record':record,
+                           'content':report.xml,
+                           'size':report.size(),
+                           'digest':report.digest(),
+                           'label':report.label,
+                           'creator':creator}
+            self.createDocument(**report_args)
 
     def setUp(self):
         self.disableAccessControl()

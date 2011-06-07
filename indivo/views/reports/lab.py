@@ -2,30 +2,32 @@
 Indivo Views -- Lab
 """
 
-from django.http import HttpResponseBadRequest
-from indivo.lib.view_decorators import marsloader
-from indivo.lib.utils import render_template, carenet_filter
-from indivo.models import *
-from reportutils import report_orderby_update
+from django.http import HttpResponseBadRequest, HttpResponse
+from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
+from indivo.models import Lab
 
+LAB_FILTERS = {
+  'lab_type': ('lab_type', STRING),
+  'date_measured': ('date_measured', DATE),
+  'lab_test_name': ('first_lab_test_name', STRING),
+  DEFAULT_ORDERBY : ('created_at', DATE)
+}
 
-@marsloader
-def lab_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
-  if carenet:
-    record = carenet.record
-  if not record:
-    return HttpResponseBadRequest()
+LAB_TEMPLATE = 'reports/lab.xml'
 
-  processed_order_by = report_orderby_update(order_by)
-
-  labs = carenet_filter(carenet, 
-              Lab.objects.select_related().filter(
-                record=record, 
-                document__status=status).order_by(processed_order_by))
-  return render_template('reports/labs', 
-                          { 'labs' : labs[offset:offset+limit], 
-                            'trc' : len(labs),
-                            'limit' : limit,
-                            'offset' : offset,
-                            'order_by' : order_by }, 
-                          type="xml")
+@marsloader(query_api_support=True)
+def lab_list(request, group_by, date_group, aggregate_by,
+             limit, offset, order_by,
+             status, date_range, filters,
+             record=None, carenet=None):
+  
+  q = FactQuery(Lab, LAB_FILTERS, 
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, filters,
+                record, carenet)
+  try:
+    return q.render(LAB_TEMPLATE)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))

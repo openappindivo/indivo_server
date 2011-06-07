@@ -2,45 +2,49 @@
 Indivo Views -- Measurements
 """
 
-from django.http import HttpResponseBadRequest
-from indivo.lib.view_decorators import marsloader
-from indivo.lib.utils import render_template, carenet_filter
-from indivo.models import *
-from reportutils import report_orderby_update
+from django.http import HttpResponseBadRequest, HttpResponse
+from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
+from indivo.models import Measurement
+import copy
 
+MEASUREMENT_FILTERS = {
+  'lab_code' : ('type', STRING),
+  'value' : ('value', NUMBER),
+  'date_measured' : ('datetime', DATE),
+  DEFAULT_ORDERBY : ('created_at', DATE)
+}
 
-@marsloader
-def measurement_list(request, limit, offset, status, order_by, lab_code, record):
+MEASUREMENT_TEMPLATE = 'reports/measurement.xml'
+
+def measurement_list(*args, **kwargs):
   """ For 1:1 mapping of URLs to views: calls _measurement_list """
-  return _measurement_list(request, limit, offset, status, order_by, lab_code, record=record)
+  return _measurement_list(*args, **kwargs)
 
-
-@marsloader
-def carenet_measurement_list(request, limit, offset, status, order_by, lab_code, carenet):
+def carenet_measurement_list(*args, **kwargs):
   """ For 1:1 mapping of URLs to views: calls _measurement_list """
-  return _measurement_list(request, limit, offset, status, order_by, lab_code, carenet=carenet)
+  return _measurement_list(*args, **kwargs)
 
-def _measurement_list(request, limit, offset, status, order_by, lab_code, record=None, carenet=None):
-  """
-  Func for listing measurements
-  """
+@marsloader(query_api_support=True)
+def _measurement_list(request, group_by, date_group, aggregate_by,
+                      limit, offset, order_by,
+                      status, date_range, filters,
+                      lab_code, record=None, carenet=None):
+  query_filters = copy.copy(filters)
+  if lab_code:
+    query_filters['lab_code'] = lab_code
 
-  if carenet:
-    record = carenet.record
-  if not record:
-    return HttpResponseBadRequest()
+  q = FactQuery(Measurement, MEASUREMENT_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, query_filters,
+                record, carenet)
+  try:
+    # hack, so we don't display lab_code in the output if it wasn't in the query string.
+    q.execute()
+    if q.query_filters.has_key('lab_code') and not filters.has_key('lab_code'):
+      del q.query_filters['lab_code']
 
-  processed_order_by = report_orderby_update(order_by)
-
-  measurements = carenet_filter(carenet,
-                  Measurement.objects.select_related().filter(
-                    record=record, 
-                    document__status=status).order_by(processed_order_by))
-  return render_template('reports/measurements', 
-                          { 'measurements': measurements[offset:offset+limit],
-                            'record': record,
-                            'trc' : len(measurements),
-                            'limit' : limit,
-                            'offset' : offset,
-                            'order_by' : order_by}, 
-                          type="xml")
+    return q.render(MEASUREMENT_TEMPLATE)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))

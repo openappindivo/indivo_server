@@ -2,40 +2,38 @@
 Indivo Views -- Immunizations
 """
 
-from django.http import HttpResponseBadRequest
-from indivo.lib.view_decorators import marsloader
-from indivo.lib.utils import render_template, carenet_filter
-from indivo.models import *
-from reportutils import report_orderby_update
+from django.http import HttpResponseBadRequest, HttpResponse
+from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
+from indivo.models import Immunization
 
+IMMUNIZATION_FILTERS = {
+  'vaccine_type' : ('vaccine_type', STRING),
+  'date_administered': ('date_administered', DATE),
+  DEFAULT_ORDERBY : ('created_at', DATE)
+}
 
-@marsloader
-def immunization_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
+IMMUNIZATION_TEMPLATE = 'reports/immunization.xml'
+
+def immunization_list(*args, **kwargs):
   """For 1:1 mapping of URLs to views: calls _immunization_list"""
-  return _immunization_list(request, limit, offset, status, order_by, record, carenet)
+  return _immunization_list(*args, **kwargs)
 
-
-@marsloader
-def carenet_immunization_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
+def carenet_immunization_list(*args, **kwargs):
   """For 1:1 mapping of URLs to views: calls _immunization_list"""
-  return _immunization_list(request, limit, offset, status, order_by, record, carenet)
+  return _immunization_list(*args, **kwargs)
 
-def _immunization_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
-  if carenet:
-    record = carenet.record
-  if not record:
-    return HttpResponseBadRequest()
-
-  processed_order_by = report_orderby_update(order_by)
-
-  immunizations = carenet_filter(carenet, 
-                    Immunization.objects.select_related().filter(
-                      record=record, 
-                      document__status=status).order_by(processed_order_by))
-  return render_template('reports/immunizations', 
-                          { 'immunizations' : immunizations[offset:offset+limit], 
-                            'trc' : len(immunizations),
-                            'limit' : limit,
-                            'offset' : offset,
-                            'order_by' : order_by}, 
-                            type="xml")
+@marsloader(query_api_support=True)
+def _immunization_list(request, group_by, date_group, aggregate_by,
+                       limit, offset, order_by,
+                       status, date_range, filters,
+                       record=None, carenet=None):
+  q = FactQuery(Immunization, IMMUNIZATION_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, filters,
+                record, carenet)
+  try:
+    return q.render(IMMUNIZATION_TEMPLATE)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))

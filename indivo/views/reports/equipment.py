@@ -2,40 +2,41 @@
 Indivo Views -- Equipment
 """
 
-from django.http import HttpResponseBadRequest
-from indivo.lib.view_decorators import marsloader
-from indivo.lib.utils import render_template, carenet_filter
-from indivo.models import *
-from reportutils import report_orderby_update
+from django.http import HttpResponseBadRequest, HttpResponse
+from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
+from indivo.models import Equipment
 
+EQUIPMENT_FILTERS = {
+  'date_started': ('date_started', DATE),
+  'date_stopped': ('date_stopped', DATE),
+  'equipment_name': ('name', STRING),
+  'equipment_vendor': ('vendor', STRING),
+  DEFAULT_ORDERBY : ('created_at', DATE)
+}
 
-@marsloader
-def equipment_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
+EQUIPMENT_TEMPLATE = 'reports/equipment.xml'
+
+def equipment_list(*args, **kwargs):
   """For 1:1 mapping of URLs to views. Calls _equipment_list"""
-  return _equipment_list(request, limit, offset, status, order_by, record, carenet)
+  return _equipment_list(*args, **kwargs)
 
 
-@marsloader
-def carenet_equipment_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
+def carenet_equipment_list(*args, **kwargs):
   """For 1:1 mapping of URLs to views. Calls _equipment_list"""
-  return _equipment_list(request, limit, offset, status, order_by, record, carenet)
+  return _equipment_list(*args, **kwargs)
 
-def _equipment_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
-  if carenet:
-    record = carenet.record
-  if not record:
-    return HttpResponseBadRequest()
-
-  processed_order_by = report_orderby_update(order_by)
-
-  equipment = carenet_filter(carenet,
-                Equipment.objects.select_related().filter(
-                  record=record, 
-                  document__status=status).order_by(processed_order_by))
-  return render_template('reports/equipment', 
-                          { 'equipment' : equipment[offset:offset+limit],
-                            'trc' : len(equipment),
-                            'limit' : limit,
-                            'offset' : offset,
-                            'order_by' : order_by },
-                          type="xml")
+@marsloader(query_api_support=True)
+def _equipment_list(request, group_by, date_group, aggregate_by,
+                       limit, offset, order_by,
+                       status, date_range, filters,
+                       record=None, carenet=None):
+  q = FactQuery(Equipment, EQUIPMENT_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, filters,
+                record, carenet)
+  try:
+    return q.render(EQUIPMENT_TEMPLATE)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))

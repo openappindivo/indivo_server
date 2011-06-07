@@ -2,31 +2,31 @@
 Indivo Views -- Simple Clinical Notes
 """
 
-from django.http import HttpResponseBadRequest
-from indivo.lib.view_decorators import marsloader
-from indivo.lib.utils import render_template, carenet_filter
-from indivo.models import *
-from reportutils import report_orderby_update
+from django.http import HttpResponseBadRequest, HttpResponse
+from indivo.lib.view_decorators import marsloader, DEFAULT_ORDERBY
+from indivo.lib.query import FactQuery, DATE, STRING, NUMBER
+from indivo.models import SimpleClinicalNote
 
+SIMPLE_CLINICAL_NOTE_FILTERS = {
+  'specialty' : ('specialty', STRING),
+  'provider_name' : ('provider_name', STRING),
+  'date_of_visit': ('date_of_visit', DATE),
+  DEFAULT_ORDERBY : ('created_at', DATE)
+}
 
-@marsloader
-def simple_clinical_notes_list(request, limit, offset, status, order_by='created_at', record=None, carenet=None):
-  if carenet:
-    record = carenet.record
-  if not record:
-    return HttpResponseBadRequest()
+SIMPLE_CLINICAL_NOTE_TEMPLATE = 'reports/simple_clinical_note.xml'
 
-  processed_order_by = report_orderby_update(order_by)
-
-  simple_clinical_notes = carenet_filter(carenet,
-                SimpleClinicalNote.objects.select_related().filter(
-                  record=record, 
-                  document__status=status).order_by(processed_order_by))
-  return render_template('reports/simple_clinical_notes', 
-                          { 'scns' : simple_clinical_notes[offset:offset+limit],
-                            'trc' : len(simple_clinical_notes),
-                            'limit' : limit,
-                            'offset' : offset,
-                            'order_by' : order_by
-                          }, 
-                          type='xml')
+@marsloader(query_api_support=True)
+def simple_clinical_notes_list(request, group_by, date_group, aggregate_by,
+                              limit, offset, order_by,
+                              status, date_range, filters,
+                              record=None, carenet=None):
+  q = FactQuery(SimpleClinicalNote, SIMPLE_CLINICAL_NOTE_FILTERS,
+                group_by, date_group, aggregate_by,
+                limit, offset, order_by,
+                status, date_range, filters,
+                record, carenet)
+  try:
+    return q.render(SIMPLE_CLINICAL_NOTE_TEMPLATE)
+  except ValueError as e:
+    return HttpResponseBadRequest(str(e))
