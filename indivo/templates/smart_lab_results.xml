@@ -82,6 +82,14 @@
     </sp:abnormalInterpretation>
     {% endif %}
 
+    {% if lab.date_measured %}
+      <sp:specimenCollected>
+        <sp:Attribution>
+          <sp:startTime>{{lab.date_measured|date:"Y-m-d"}}</sp:startTime>
+        </sp:Attribution>
+      </sp:specimenCollected>
+    {% endif %}
+
     <sp:comments>{{lab.lab_comments|check_empty}}</sp:comments>
   </sp:LabResult>
   {% endfor %}
