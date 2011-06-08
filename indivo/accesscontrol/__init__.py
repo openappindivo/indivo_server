@@ -343,4 +343,7 @@ def load_access_rules():
                  smart_lab_results]
   AccessRule('SMART Permissions', smart_permissions, smart_views)
 
+  smart_views = [smart_ontology]
+  AccessRule('SMART Permissions', basic_access, smart_views)
+
 load_access_rules()

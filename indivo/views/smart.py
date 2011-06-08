@@ -5,6 +5,7 @@ SMArt Views for Indivo
 from indivo.lib import utils
 from base import *
 from lxml import etree
+import urllib2
 
 def smart_app_setup(request, record, smart_app_email):
     """
@@ -23,6 +24,11 @@ def smart_app_remove(request, record, smart_app_email):
     SmartRecordInstalledApp.objects.get(app = smart_app, record=record).delete()
     return DONE
 
+def smart_ontology(request):
+    """
+    return the smart ontology (just proxied for now)
+    """
+    return HttpResponse(urllib2.urlopen("http://sandbox-api.smartplatforms.org/ontology").read())
 
 def smart_meds(request, record):
     meds = Medication.objects.filter(record = record)

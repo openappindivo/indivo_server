@@ -10,6 +10,9 @@ urlpatterns = patterns(
     (r'^records/(?P<record_id>[^/]+)/apps/(?P<smart_app_email>[^/]+)/setup', smart_app_setup),
     (r'^records/(?P<record_id>[^/]+)/apps/(?P<smart_app_email>[^/]+)/remove', smart_app_remove),
 
+    # smart ontology
+    (r'^ontology$', smart_ontology),
+
     # smart demographics
     (r'^records/(?P<record_id>[^/]+)/demographics$', smart_demographics),
     
