@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 
 #from oauth.djangoutils import request_token, exchange_token, PARAMS
 #PARAMS['OAUTH_SERVER'] = OAUTH_SERVER
