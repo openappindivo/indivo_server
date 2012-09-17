@@ -12,8 +12,8 @@ class Authentication(object):
   def process_request(self, request):
 
     # django 1.3.0 fails to create a QueryDict for request.POST if we access
-    # request.raw_post_data first, but django 1.3.1 raises an exception if
-    # we read request.POST and subsequently read request.raw_post_data.
+    # request.body first, but django 1.3.1 raises an exception if
+    # we read request.POST and subsequently read request.body.
     #
     # So, we preemptively read the appropriate variable first, depending on
     # the current version of django
@@ -23,6 +23,6 @@ class Authentication(object):
 
   
   noclobber_map = {'1.3.0': lambda request: request.POST,
-                   '1.3.1+': lambda request: request.raw_post_data,
+                   '1.3.1+': lambda request: request.body,
                    }
   avoid_post_clobbering = DjangoVersionDependentExecutor(noclobber_map)

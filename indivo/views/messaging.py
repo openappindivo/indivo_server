@@ -131,7 +131,7 @@ def record_message_attach(request, record, message_id, attachment_num):
   messages = Message.objects.filter(about_record = record, external_identifier = message_id)
   
   for message in messages:
-    message.add_attachment(attachment_num, request.raw_post_data)
+    message.add_attachment(attachment_num, request.body)
 
   return DONE
 
