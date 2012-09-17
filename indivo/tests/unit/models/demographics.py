@@ -1,5 +1,5 @@
 import os
-import settings
+from indivo import settings
 import json
 
 from lxml import etree

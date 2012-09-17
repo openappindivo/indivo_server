@@ -1,5 +1,5 @@
 import os
-import settings
+from indivo import settings
 import sys
 import json
 import datetime
